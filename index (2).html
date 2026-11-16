@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Crushwave: free dating for India. Swipe, match and chat without a paywall.">
+<title>Crushwave</title>
+<meta name="theme-color" content="#0a0612">
+<link rel="manifest" href="app.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap">
+<style>
+/* Layout concept: neon-night hero, then a three-column swipe app (filters | deck | ad rail), then plain-spoken trust sections. */
+:root{
+  --bg:#0a0612; --bg2:#120a22; --card:#1a1030; --card2:#241842; --line:rgba(255,255,255,.10);
+  --fg:#f7f2ff; --mute:#b4aad0; --pink:#ff3d8b; --violet:#8b5cf6; --cyan:#22d3ee; --amber:#ffb547; --ok:#34d399;
+  --grad:linear-gradient(120deg,#ff3d8b 0%,#8b5cf6 55%,#22d3ee 100%);
+  --fd:'Unbounded','Trebuchet MS',system-ui,sans-serif; --fb:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:var(--fb); font-size:16px; line-height:1.55; color:var(--fg);
+  background:radial-gradient(900px 520px at 88% -8%,rgba(139,92,246,.34),transparent 60%),radial-gradient(700px 520px at -8% 18%,rgba(255,61,139,.22),transparent 60%),var(--bg);
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 84px; overflow-x:hidden;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:70;background:var(--bg)}
+img{max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;min-width:0}
+h1,h2,h3{font-family:var(--fd);text-wrap:balance;margin:0;line-height:1.1}
+p{margin:0}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);font-weight:700}
+
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:rgba(10,6,18,.82);backdrop-filter:blur(14px);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:16px;min-height:64px;max-width:1200px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-weight:800;font-size:22px;text-decoration:none;color:var(--fg)}
+.logo svg{width:28px;height:28px}
+nav{margin-left:auto;display:flex;gap:6px;align-items:center}
+nav a{color:var(--mute);text-decoration:none;font-weight:600;font-size:14px;padding:8px 12px;border-radius:999px}
+nav a:hover{color:var(--fg);background:rgba(255,255,255,.07)}
+.pill18{font-size:12px;font-weight:800;border:1.5px solid var(--pink);color:var(--pink);padding:3px 9px;border-radius:999px}
+@media(max-width:640px){nav a.opt{display:none}.logo{font-size:19px}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:800;font-size:15px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--grad);color:#fff;box-shadow:0 10px 30px -8px rgba(255,61,139,.6)}
+.btn.primary:hover{box-shadow:0 14px 36px -6px rgba(139,92,246,.7)}
+.btn.ghost{border:1.5px solid var(--line);color:var(--fg);background:rgba(255,255,255,.04)}
+.btn.ghost:hover{border-color:var(--violet)}
+.btn.danger{border:1.5px solid rgba(255,61,139,.6);color:var(--pink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center;padding-block:56px 40px}
+.hero h1{font-size:clamp(34px,6vw,64px);font-weight:800;letter-spacing:-.02em}
+.hero p.lead{font-size:18px;color:var(--mute);max-width:52ch;margin-top:18px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cities{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.cities span{font-size:13px;font-weight:600;color:var(--mute);border:1px solid var(--line);padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.03)}
+.stackvis{position:relative;height:430px;max-width:380px;width:100%;margin:0 auto}
+.sv{position:absolute;inset:0;border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 60px -20px rgba(0,0,0,.7)}
+.sv svg{width:100%;height:100%;display:block}
+.sv .tag{position:absolute;left:16px;right:16px;bottom:16px;display:flex;justify-content:space-between;align-items:end;z-index:2}
+.sv .tag b{font-family:var(--fd);font-size:22px}
+.sv::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,6,18,.85),transparent 45%);pointer-events:none}
+.sv1{transform:rotate(-9deg) translate(-34px,10px)}
+.sv2{transform:rotate(7deg) translate(36px,0)}
+.sv3{transform:rotate(-1deg)}
+.float{position:absolute;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 14px;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center;box-shadow:0 14px 30px -10px rgba(0,0,0,.6)}
+.float.a{right:-8px;top:34px}.float.b{left:-10px;bottom:70px}
+@media(max-width:860px){.hero{grid-template-columns:1fr;padding-block:36px 24px}.stackvis{height:380px;max-width:300px}.sv1{transform:rotate(-7deg) translate(-14px,10px)}.sv2{transform:rotate(5deg) translate(14px,0)}.float.a{right:-4px}.float.b{left:-4px}}
+.hero{overflow-x:clip}
+
+.ad{position:relative;border:1.5px dashed rgba(255,255,255,.22);border-radius:14px;background:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 10px,transparent 10px 20px);display:grid;place-items:center;text-align:center;color:var(--mute);font-size:13px;min-width:0;overflow:hidden}
+.ad small{position:absolute;top:6px;left:10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.8}
+.ad b{display:block;color:var(--fg);font-size:14px}
+.ad.leader{height:90px;max-width:728px;margin:0 auto}
+.ad.rect{height:250px}
+.ad.tall{height:600px}
+.ad.banner{height:50px;max-width:320px;margin:0 auto}
+.adband{padding-block:8px 28px}
+.anchor{position:fixed;left:0;right:0;bottom:0;z-index:55;padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(10,6,18,.94);border-top:1px solid var(--line)}
+.anchor .x{position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:-14px;width:28px;height:28px;border-radius:50%;background:var(--card2);border:1px solid var(--line);font-size:14px;line-height:1}
+
+.appbox{margin-top:8px;scroll-margin-top:84px}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px;width:max-content;max-width:100%;margin:0 auto 22px}
+.tabs button{padding:9px 20px;border-radius:999px;font-weight:700;font-size:14px;color:var(--mute);display:flex;gap:8px;align-items:center}
+.tabs button[aria-selected="true"]{background:var(--grad);color:#fff}
+.tabs .dot{background:var(--pink);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;font-weight:800}
+.app{display:grid;grid-template-columns:260px minmax(0,1fr) 300px;gap:24px;align-items:start}
+@media(max-width:1020px){.app{grid-template-columns:minmax(0,1fr)}.rail{display:none}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;min-width:0}
+.panel h3{font-size:14px;letter-spacing:.02em;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);font-size:13px;font-weight:700;color:var(--mute)}
+.chip[aria-pressed="true"]{border-color:var(--pink);color:#fff;background:rgba(255,61,139,.18)}
+.field{display:grid;gap:6px;margin-top:16px}
+.field label{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.05em;text-transform:uppercase}
+input[type=range]{width:100%;accent-color:var(--pink)}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=tel],select,textarea{width:100%;background:var(--bg2);color:var(--fg);border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;font:inherit;font-size:15px}
+textarea{resize:vertical;min-height:90px}
+.note{font-size:12px;color:var(--mute);margin-top:14px;line-height:1.5}
+.linkbtn{color:var(--cyan);font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px;margin-top:12px}
+.likes{margin-bottom:14px;font-size:14px;font-weight:700}
+.likes .row1{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.likes .bar{flex:1;height:6px;border-radius:99px;background:var(--bg2);overflow:hidden}
+.likes .bar i{display:block;height:100%;background:var(--grad);transition:width .3s}
+.likes small{display:block;margin-top:6px;font-weight:600;color:var(--mute);font-size:12px}
+.deckwrap{max-width:420px;margin:0 auto;width:100%}
+.deck{position:relative;height:540px;touch-action:pan-y}
+.card{position:absolute;inset:0;border-radius:28px;overflow:hidden;background:var(--card);border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 50px -22px rgba(0,0,0,.8);transition:transform .28s ease,opacity .28s;user-select:none;-webkit-user-select:none;touch-action:pan-y;will-change:transform}
+.card.top{cursor:grab}
+.card.s1{transform:scale(.95) translateY(16px);opacity:.75}
+.card.s2{transform:scale(.90) translateY(32px);opacity:.45}
+.card .ph{position:absolute;inset:0}
+.card .ph svg{width:100%;height:100%;display:block}
+.card .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,4,16,.96) 0%,rgba(8,4,16,.78) 36%,transparent 62%);pointer-events:none}
+.card .info{position:absolute;left:0;right:0;bottom:0;padding:18px 18px 20px;display:grid;gap:9px}
+.card h2{font-size:26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h2 span{font-weight:500}
+.ver{display:inline-flex;align-items:center;gap:5px;font-family:var(--fb);font-size:11px;font-weight:800;color:var(--bg);background:var(--cyan);padding:3px 8px;border-radius:999px}
+.ver svg{width:11px;height:11px}
+.meta{font-size:13px;color:#d6cdee;font-weight:600}
+.bio{font-size:14px;color:#ece5ff;overflow-wrap:anywhere}
+.q{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 12px;font-size:13px}
+.q b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:rgba(139,92,246,.35);border:1px solid rgba(139,92,246,.6)}
+.stamp{position:absolute;top:30px;font-family:var(--fd);font-weight:800;font-size:30px;padding:4px 14px;border:4px solid;border-radius:12px;opacity:0;transition:opacity .1s;z-index:3;pointer-events:none}
+.stamp.like{left:22px;color:var(--ok);transform:rotate(-14deg)}
+.stamp.nope{right:22px;color:var(--pink);transform:rotate(14deg)}
+.card.lk .stamp.like,.card.np .stamp.nope{opacity:1}
+.more{position:absolute;top:14px;right:14px;z-index:4;width:36px;height:36px;border-radius:50%;background:rgba(10,6,18,.55);backdrop-filter:blur(6px);display:grid;place-items:center}
+.more svg{width:18px;height:18px}
+.menu{position:absolute;top:56px;right:14px;z-index:5;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:6px;min-width:170px;box-shadow:0 16px 30px -10px #000}
+.menu button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:9px;font-weight:700;font-size:14px}
+.menu button:hover{background:rgba(255,255,255,.08)}
+.menu button.warn{color:var(--pink)}
+.actions{display:flex;justify-content:center;gap:18px;margin-top:26px}
+.act{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1.5px solid var(--line);transition:transform .15s}
+.act:hover{transform:translateY(-3px) scale(1.06)}
+.act svg{width:28px;height:28px}
+.act.no{color:var(--pink);border-color:rgba(255,61,139,.5)}
+.act.yes{width:72px;height:72px;background:var(--grad);border:0;color:#fff;box-shadow:0 12px 28px -8px rgba(255,61,139,.7)}
+.act.yes svg{width:32px;height:32px}
+.act.sup{color:var(--amber);border-color:rgba(255,181,71,.5)}
+.deckwrap.onad .actions{visibility:hidden}
+.empty{height:100%;display:grid;place-items:center;text-align:center;padding:30px;border:1.5px dashed var(--line);border-radius:28px;color:var(--mute)}
+.empty h3{color:var(--fg);font-size:20px;margin-bottom:8px}
+.adcard{background:linear-gradient(160deg,#1d1236,#10091f)}
+.adcard .in{position:absolute;inset:0;padding:22px;display:grid;grid-template-rows:auto 1fr auto;gap:16px}
+.adcard .ad{height:100%}
+.adcard .lab{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:800}
+
+.mlist{display:grid;gap:10px;max-width:640px;margin:0 auto}
+.mrow{display:flex;gap:14px;align-items:center;padding:12px;border-radius:18px;background:var(--card);border:1px solid var(--line);text-align:left;width:100%}
+.mrow:hover{border-color:var(--violet)}
+.av{width:54px;height:54px;border-radius:50%;overflow:hidden;flex:none;border:2px solid rgba(255,255,255,.2)}
+.av svg{width:100%;height:100%;display:block}
+.mrow .t{min-width:0;flex:1}
+.mrow b{display:block}
+.mrow span.s{font-size:13px;color:var(--mute);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:grid;grid-template-rows:auto minmax(260px,420px) auto auto}
+.chat .chd{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card2);border-bottom:1px solid var(--line)}
+.back{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.07)}
+.back svg{width:18px;height:18px}
+.msgs{overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
+.b{max-width:80%;padding:9px 14px;border-radius:18px;font-size:15px;overflow-wrap:anywhere}
+.b.them{background:var(--card2);align-self:flex-start;border-bottom-left-radius:6px}
+.b.me{background:var(--grad);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.b.sys{align-self:center;background:none;color:var(--mute);font-size:12px;text-align:center;max-width:92%}
+.typing{display:flex;gap:4px;padding:12px 14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--mute);animation:bl 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+.ice{display:flex;gap:8px;overflow-x:auto;padding:10px 14px 0}
+.ice button{flex:none;font-size:13px;font-weight:700;border:1.5px solid var(--line);padding:7px 13px;border-radius:999px;color:var(--mute)}
+.ice button:hover{border-color:var(--cyan);color:var(--fg)}
+.cin{display:flex;gap:10px;padding:12px 14px}
+.cin input{flex:1;min-width:0}
+.cin button{width:46px;height:46px;border-radius:50%;background:var(--grad);display:grid;place-items:center;flex:none}
+.cin svg{width:20px;height:20px}
+.mini{margin-top:20px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+.mini .av{width:96px;height:96px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--mute);margin-top:16px;line-height:1.45}
+.consent input{margin-top:3px;accent-color:var(--pink);flex:none;width:18px;height:18px}
+.consent .mr{display:block;margin-top:4px;font-size:12.5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+.who{font-size:13px;color:var(--mute);margin-bottom:14px;overflow-wrap:anywhere}
+.fine{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.errtxt{color:var(--pink);font-size:13px;font-weight:700;min-height:18px;margin-top:10px}
+
+section.blk{padding-block:56px 12px;scroll-margin-top:72px}
+section.blk>h2{font-size:clamp(26px,4vw,40px);margin-top:10px}
+section.blk>p.sub{color:var(--mute);max-width:60ch;margin-top:14px;font-size:17px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:30px}
+@media(max-width:860px){.grid3{grid-template-columns:minmax(0,1fr)}}
+@media(min-width:861px) and (max-width:1020px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;min-width:0}
+.tile .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;margin-bottom:14px;background:rgba(139,92,246,.2);color:var(--cyan)}
+.tile .ic svg{width:22px;height:22px}
+.tile h3{font-size:16px;margin-bottom:8px;font-family:var(--fb);font-weight:800}
+.tile p{font-size:14.5px;color:var(--mute)}
+.rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:30px}
+@media(max-width:860px){.rules{grid-template-columns:minmax(0,1fr)}}
+.rules .yes,.rules .no{border-radius:20px;padding:22px;border:1px solid var(--line);background:var(--card)}
+.rules h3{font-size:15px;margin-bottom:12px;font-family:var(--fb);font-weight:800}
+.rules .yes h3{color:var(--ok)}.rules .no h3{color:var(--pink)}
+.rules ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;font-size:14.5px;color:#dcd4f2}
+.rules li{display:flex;gap:10px}
+.rules li svg{width:18px;height:18px;flex:none;margin-top:3px}
+.rules .yes svg{color:var(--ok)}.rules .no svg{color:var(--pink)}
+footer{margin-top:56px;padding-block:28px 12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+footer .wrap>*+*{margin-top:8px}
+
+.ov{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(6,3,12,.82);backdrop-filter:blur(10px)}
+.modal{background:var(--card);border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:28px;max-width:440px;width:100%;text-align:center;box-shadow:0 40px 80px -20px #000;max-height:100%;overflow:auto}
+.modal h2{font-size:26px;margin-bottom:10px}
+.modal p{color:var(--mute);margin-bottom:20px}
+.modal .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:10px}
+.modal .field{text-align:left;margin-top:0;margin-bottom:12px}
+.pair{display:flex;justify-content:center;margin-bottom:18px}
+.pair .av{width:96px;height:96px;border:3px solid var(--card)}
+.pair .av+.av{margin-left:-20px}
+.prog{height:6px;border-radius:99px;background:var(--bg2);overflow:hidden;margin:14px 0 18px}
+.prog i{display:block;height:100%;width:0;background:var(--grad)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:120;background:var(--card2);border:1px solid var(--line);padding:11px 18px;border-radius:999px;font-weight:700;font-size:14px;box-shadow:0 14px 30px -8px #000;max-width:calc(100% - 32px);text-align:center}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+
+<!-- AD SLOTS: every <div class="ad"> is a placeholder. When an ad network approves your site, replace the contents
+of each one with that network's code. Slots: leaderboard, side rail (rectangle + half page), bottom anchor banner,
+the sponsored card after every 15 profiles, and the 5 second video break after every 10 likes. -->
+
+</head>
+<body>
+<header>
+  <div class="hd">
+    <a class="logo" href="#top" aria-label="Crushwave home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3d8b"/><stop offset=".6" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><path d="M16 28S3 20 3 11.5C3 7.4 6 5 9.2 5c2.8 0 5 1.6 6.8 4.2C17.8 6.6 20 5 22.8 5 26 5 29 7.4 29 11.5 29 20 16 28 16 28z" fill="url(#lg)"/></svg>
+      Crushwave
+    </a>
+    <nav>
+      <a href="#app">Discover</a>
+      <a class="opt" href="#free">Why it's free</a>
+      <a class="opt" href="#safety">Safety</a>
+      <span class="pill18">18+</span>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Free dating for India</p>
+      <h1>Meet people who <span class="grad-text">actually reply.</span></h1>
+      <p class="lead">Swipe, match and chat without a paywall. Every like is free, profiles are checked, and ads never show up in the middle of a conversation.</p>
+      <div class="cta">
+        <a class="btn primary" href="#app">Start swiping</a>
+        <a class="btn ghost" href="#safety">How we keep it safe</a>
+      </div>
+      <div class="cities" aria-label="Cities">
+        <span>Pune</span><span>Mumbai</span><span>Nashik</span><span>Nagpur</span><span>Kolhapur</span><span>Thane</span><span>Sambhajinagar</span>
+      </div>
+    </div>
+    <div class="stackvis" aria-hidden="true">
+      <div class="sv sv1" id="hv1"></div>
+      <div class="sv sv2" id="hv2"></div>
+      <div class="sv sv3" id="hv3"><div class="tag"><b>Aarohi, 24</b><span class="ver" id="hver"></span></div></div>
+      <div class="float a" id="fa"></div>
+      <div class="float b" id="fb2"></div>
+    </div>
+  </section>
+
+  <div class="adband"><div class="ad leader"><small>Advertisement</small><div><b>Leaderboard ad slot</b>728 x 90</div></div></div>
+
+  <section class="appbox" id="app" aria-label="Crushwave app">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tb-d" aria-selected="true" data-tab="discover">Discover</button>
+      <button role="tab" id="tb-m" aria-selected="false" data-tab="matches">Matches <span class="dot" id="mcount" hidden>0</span></button>
+      <button role="tab" id="tb-p" aria-selected="false" data-tab="me">My profile</button>
+    </div>
+
+    <div class="app" id="v-discover">
+      <aside class="panel" aria-label="Filters">
+        <h3>Who do you want to see?</h3>
+        <div class="chips" id="showChips">
+          <button class="chip" aria-pressed="true" data-v="all">Everyone</button>
+          <button class="chip" aria-pressed="false" data-v="w">Women</button>
+          <button class="chip" aria-pressed="false" data-v="m">Men</button>
+        </div>
+        <div class="field">
+          <label for="maxAge">Maximum age: <span id="maxAgeV">40</span></label>
+          <input type="range" id="maxAge" min="21" max="40" value="40">
+        </div>
+        <button class="linkbtn" id="resetDeck">Start the sample deck again</button>
+        <p class="note" id="demoNote">Profiles in this preview are fictional examples. Real members appear once Crushwave goes live in your city.</p>
+      </aside>
+
+      <div>
+        <div class="deckwrap" id="deckwrap">
+          <div class="likes">
+            <div class="row1"><span id="likeTxt">Ad break in 10 likes</span><div class="bar"><i id="likeBar" style="width:0%"></i></div></div>
+            <small id="adTxt">Sponsored card in 15 profiles</small>
+          </div>
+          <div class="deck" id="deck" aria-live="polite"></div>
+          <div class="actions">
+            <button class="act no" id="bNo" aria-label="Pass"></button>
+            <button class="act yes" id="bYes" aria-label="Like"></button>
+            <button class="act sup" id="bSup" aria-label="Super like"></button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="rail" aria-label="Sponsored">
+        <div class="ad rect"><small>Advertisement</small><div><b>Rectangle ad slot</b>300 x 250</div></div>
+        <div class="ad tall" style="margin-top:16px"><small>Advertisement</small><div><b>Half page ad slot</b>300 x 600</div></div>
+      </aside>
+    </div>
+
+    <div id="v-matches" hidden></div>
+
+    <div id="v-me" hidden>
+      <div class="panel" style="max-width:560px;margin:0 auto">
+        <h3>Your profile</h3>
+        <p class="who" id="whoAmI" hidden></p>
+        <div class="field" style="margin-top:0"><label for="meName">First name</label><input type="text" id="meName" maxlength="30" autocomplete="off"></div>
+        <div class="row2">
+          <div class="field"><label for="meDob">Date of birth</label><input type="date" id="meDob"></div>
+          <div class="field"><label for="meGender">I am</label><select id="meGender"><option value="w">Woman</option><option value="m">Man</option><option value="o">Other</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="meCity">City</label><input type="text" id="meCity" maxlength="40" autocomplete="off"></div>
+          <div class="field"><label for="meLook">I'm interested in</label><select id="meLook"><option value="all">Everyone</option><option value="w">Women</option><option value="m">Men</option></select></div>
+        </div>
+        <div class="field"><label for="meInt">Interests (up to 6, separated by commas)</label><input type="text" id="meInt" maxlength="90" autocomplete="off" placeholder="Trekking, Filter coffee, Cricket"></div>
+        <div class="field"><label for="meBio">About me</label><textarea id="meBio" maxlength="240" placeholder="Your favourite weekend plan, a food you'd defend in public, anything real."></textarea></div>
+        <p class="note">For everyone's safety, nobody can share Instagram, Snapchat or any other social media ID, phone number or link, in bios or in chat. Keep the conversation on Crushwave.</p>
+        <label class="consent" id="consentRow"><input type="checkbox" id="meConsent"><span>I am 18 or older. I agree that Crushwave may store my profile details and show them to other adult members, as described in the Privacy Policy. I can withdraw this consent any time by deleting my account.<span class="mr">मी १८ वर्षांचा/ची किंवा त्याहून मोठा/मोठी आहे. माझी प्रोफाइल माहिती इतर प्रौढ सदस्यांना दाखवण्यास माझी संमती आहे. मी अकाउंट डिलीट करून ही संमती कधीही मागे घेऊ शकतो/शकते.</span></span></label>
+        <p class="errtxt" id="meErr" role="alert"></p>
+        <div class="mini"><div class="av" id="meAv"></div><div><b id="mePrevName">Your name</b><p class="meta" id="mePrevMeta" style="color:var(--mute)">City</p><p class="bio" id="mePrevBio" style="color:var(--mute)"></p></div></div>
+        <div class="cta"><button class="btn primary" id="meSave">Save profile</button></div>
+        <div class="fine" id="liveActs" hidden>
+          <button class="btn ghost" id="logoutBtn">Log out</button>
+          <button class="btn danger" id="delBtn">Delete my account</button>
+          <span id="delConfirm" hidden class="note" style="margin:0">This permanently deletes your profile, matches and messages. <button class="linkbtn" id="delYes" style="margin:0 0 0 6px;color:var(--pink)">Yes, delete everything</button> <button class="linkbtn" id="delNo" style="margin:0 0 0 6px">Cancel</button></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="free">
+    <p class="eyebrow">Why it's free</p>
+    <h2>No paywall on love. Ads pay the bills.</h2>
+    <p class="sub">Most dating apps lock likes, messages and who-liked-you behind a subscription. Crushwave keeps all of that free and earns from advertising, with firm rules about where ads are allowed to appear.</p>
+    <div class="rules">
+      <div class="yes">
+        <h3>Where ads can appear</h3>
+        <ul>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>One sponsored card after every 15 profiles you view</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>A 5 second ad break after every 10 likes</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>Side and bottom banners, clearly labelled "Advertisement"</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5l4 4 8-9"/></svg>Likes, matches and messages stay free and unlimited</li>
+        </ul>
+      </div>
+      <div class="no">
+        <h3>Where ads never appear</h3>
+        <ul>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>Inside a conversation</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>On top of a profile while you are deciding</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>Designed to look like a match or a message</li>
+          <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>Targeted using your private chats</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="safety">
+    <p class="eyebrow">Safety</p>
+    <h2>Dating should not feel like a risk.</h2>
+    <p class="sub">Verified profiles, easy blocking and privacy tools are standard on the major apps in India now. Crushwave is built around the same basics.</p>
+    <div class="grid3">
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></div><h3>Verified badge</h3><p>Members who pass a check get a badge. Unverified profiles are labelled, so you always know which is which.</p></div>
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></div><h3>Block and report anywhere</h3><p>Use the menu on any card. Blocked people never see you again, and three reports hide a profile until a person reviews it.</p></div>
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>Scam and spam filter</h3><p>Instagram, Snapchat and other social media IDs, phone numbers, links and scam words are blocked in bios and in chat, so everyone stays safe on Crushwave.</p></div>
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8l8 8M16 8l-8 8"/></svg></div><h3>Adults only</h3><p>Everyone confirms they are 18 or older with a date of birth, and the check runs on our servers, not only on this page.</p></div>
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="M16 10l6-3v10l-6-3"/></svg></div><h3>Video chat first</h3><p>Talk face to face before you meet. A five minute call tells you more than fifty messages.</p></div>
+      <div class="tile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></div><h3>Your data, your call</h3><p>Delete your account from My profile and everything tied to it is erased. Chats are visible only to the two people in them.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p><b style="color:var(--fg)">Crushwave is for adults only (18+).</b> Never send money to someone you have not met. Meet in public places and tell a friend where you are going.</p>
+      <p>Sample profiles in the preview are fictional. Illustrations are not photographs of real people.</p>
+    </div>
+  </footer>
+</main>
+
+<div class="anchor" id="anchor">
+  <div class="ad banner"><small>Advertisement</small><div><b>Anchor ad slot</b>320 x 50</div></div>
+  <button class="x" id="anchorX" aria-label="Close ad">x</button>
+</div>
+
+<div class="ov" id="ovGate" role="dialog" aria-modal="true" aria-labelledby="gT">
+  <div class="modal">
+    <h2 id="gT" class="grad-text">Crushwave</h2>
+    <p id="gP">This site is for people who are 18 or older. Please confirm your age to continue.</p>
+    <div class="row" id="gRow">
+      <button class="btn primary" id="gYes">I am 18 or older</button>
+      <button class="btn ghost" id="gNo">I am under 18</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ovAuth" role="dialog" aria-modal="true" aria-labelledby="aT" hidden>
+  <div class="modal">
+    <h2 id="aT">Log in or sign up</h2>
+    <p>Use your email or mobile number. We send you a code, so there is no password to remember.</p>
+    <div class="chips" id="aMode" style="justify-content:center;margin-bottom:16px"><button class="chip" type="button" aria-pressed="true" data-m="email">Email</button><button class="chip" type="button" aria-pressed="false" data-m="phone">Mobile number</button></div>
+    <div class="field" id="aEmailBox"><label for="aEmail">Email</label><input type="email" id="aEmail" autocomplete="email" placeholder="you@example.com"></div>
+    <div class="field" id="aPhoneBox" hidden><label for="aPhone">Mobile number (India)</label><input type="tel" id="aPhone" inputmode="tel" autocomplete="tel-national" maxlength="16" placeholder="98765 43210"></div>
+    <div class="field" id="aCodeBox" hidden><label for="aCode">Code we sent you</label><input type="text" id="aCode" inputmode="numeric" maxlength="8" autocomplete="one-time-code"></div>
+    <div class="row">
+      <button class="btn primary" id="aSend">Send code</button>
+      <button class="btn primary" id="aVerify" hidden>Log in</button>
+    </div>
+    <p class="errtxt" id="aMsg" role="status"></p>
+    <div class="row" id="aGoogleRow"><button class="btn ghost" id="aGoogle">Continue with Google</button></div>
+    <p class="note">By continuing you confirm you are 18 or older.</p>
+  </div>
+</div>
+
+<div class="ov" id="ovMatch" role="dialog" aria-modal="true" aria-labelledby="mT" hidden>
+  <div class="modal">
+    <div class="pair" id="pair"></div>
+    <h2 id="mT" class="grad-text">It's a match!</h2>
+    <p id="mP"></p>
+    <div class="row"><button class="btn primary" id="mChat">Say hello</button><button class="btn ghost" id="mKeep">Keep swiping</button></div>
+  </div>
+</div>
+
+<div class="ov" id="ovBreak" role="dialog" aria-modal="true" aria-labelledby="rT" hidden>
+  <div class="modal">
+    <h2 id="rT">Quick ad break</h2>
+    <p>Ten likes done. This short ad keeps Crushwave free for everyone.</p>
+    <div class="ad rect" style="margin-bottom:6px"><small>Advertisement</small><div><b>Video ad slot</b>5 second break plays here</div></div>
+    <div class="prog"><i id="rBar"></i></div>
+    <div class="row"><button class="btn primary" id="rGo" disabled>Continue in 5</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+
+/* SETTINGS. Leave both empty to run as a preview with sample profiles.
+   To go live, paste your Supabase Project URL and the public "anon / publishable" key.
+   NEVER paste the service_role or secret key here. */
+var CONFIG={url:'https://ibnsumdcmtpwzxgnroqe.supabase.co',key:'sb_publishable_1gdtSPyvvjFX3JyifAxFoQ_aadQqguU'};
+var PROFILES_BEFORE_AD=15, LIKES_BEFORE_BREAK=10;
+var PHONE_LOGIN=false;   /* set to false if you have not connected an SMS provider yet */
+var LIVE=!!(CONFIG.url&&CONFIG.key);
+
+var $=function(s,r){return (r||document).querySelector(s)};
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function store(k,v){try{if(v===undefined){return localStorage.getItem(k)}localStorage.setItem(k,v)}catch(e){return null}}
+function hashN(s){var h=0;s=String(s);for(var i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0}return h}
+function ageOf(dob){if(!dob)return null;var d=new Date(dob);if(isNaN(d))return null;var n=new Date(),a=n.getFullYear()-d.getFullYear(),m=n.getMonth()-d.getMonth();if(m<0||(m===0&&n.getDate()<d.getDate()))a--;return a}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+var IC={
+ heart:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8.5-5.3-8.5-11.3C3.5 6.8 5.6 5 8 5c1.7 0 3.1.9 4 2.3C12.9 5.9 14.3 5 16 5c2.4 0 4.5 1.8 4.5 4.7C20.5 15.7 12 21 12 21z"/></svg>',
+ x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.3 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>',
+ dots:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+ check:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5l2.5 2.5L10 3"/></svg>',
+ send:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M3 20.5l18-8.5L3 3.5l.1 6.6L15 12 3.1 13.9z"/></svg>',
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'
+};
+
+/* Illustrated avatars, so nobody's real photo is used */
+function avatar(h,v){
+  var a='hsl('+h+' 82% 58%)',b='hsl('+((h+50)%360)+' 85% 42%)',c='hsl('+((h+300)%360)+' 90% 72%)',cl='hsl('+((h+200)%360)+' 55% 24%)';
+  var id='g'+h+'_'+v;
+  var hairBack = v%3===0 ? '<path d="M112 190c-8-70 28-122 68-122s76 52 68 122z" fill="rgba(10,6,18,.82)"/>'
+               : v%3===1 ? '<circle cx="180" cy="128" r="64" fill="rgba(10,6,18,.82)"/>'
+               : '<path d="M120 150c0-58 26-82 60-82s60 24 60 82z" fill="rgba(10,6,18,.82)"/>';
+  return '<svg viewBox="0 0 360 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+a+'"/><stop offset="1" stop-color="'+b+'"/></linearGradient></defs>'
+   +'<rect width="360" height="480" fill="url(#'+id+')"/>'
+   +'<circle cx="292" cy="86" r="124" fill="'+c+'" opacity=".34"/><circle cx="50" cy="390" r="150" fill="'+c+'" opacity=".24"/>'
+   +hairBack
+   +'<path d="M54 480c0-92 52-148 126-148s126 56 126 148z" fill="'+cl+'"/>'
+   +'<rect x="156" y="262" width="48" height="66" rx="20" fill="rgba(255,226,210,.9)"/>'
+   +'<ellipse cx="180" cy="190" rx="54" ry="64" fill="rgba(255,232,218,.95)"/>'
+   +(v%3===2?'<path d="M126 176c10-40 38-52 54-52s44 12 54 52c-18-16-36-22-54-22s-36 6-54 22z" fill="rgba(10,6,18,.82)"/>':'')
+   +'</svg>';
+}
+
+/* MODERATION. First line of defence in the browser. The database repeats the same
+   checks, so skipping this page does not skip the rules. Owner can add words in the console. */
+var BAD=['fuck','shit','bitch','asshole','bastard','slut','whore','porn','nudes','escort','sugar daddy','sugar mommy','paid date','call girl','whatsapp','telegram','snapchat','snap id','instagram','insta','facebook','twitter','discord','kik','wechat','tiktok','youtube','linkedin','crypto','bitcoin','forex','investment','gift card','send money','upi id','loan'];
+var BADRE=BAD.map(function(w){
+  var p=w.toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/([a-z0-9])/g,'$1[^a-z0-9]*').replace(/ /g,'[^a-z0-9]+');
+  return new RegExp('\\b'+p+'\\b','i');
+});
+var LEET={'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','@':'a','$':'s'};
+function modCheck(txt,strict){
+  if(!txt)return '';
+  if(/(https?:\/\/|www\.)/i.test(txt)||/[a-z0-9-]+\.(com|in|net|org|co|me|io|app|xyz)\b/i.test(txt))return 'link';
+  if(/[^\s@]+@[^\s@]+\.[a-z]{2,}/i.test(txt))return 'email';
+  if(strict&&/@[a-z0-9_.]{3,}/i.test(txt))return 'handle';
+  if(strict&&/(\+?[0-9][\s().-]*){10,}/.test(txt))return 'phone';
+  var t=txt.toLowerCase().replace(/[013457@$]/g,function(c){return LEET[c]});
+  for(var i=0;i<BADRE.length;i++){if(BADRE[i].test(t))return 'word'}
+  return '';
+}
+var MODMSG={link:'a link',email:'an email address',handle:'a social media ID',phone:'a phone number',word:'a blocked word (such as a social media name)'};
+
+/* SAMPLE PROFILES (fictional, preview mode only) */
+var P=[
+ {id:'s1',n:'Aarohi',a:24,g:'w',c:'Pune',d:3,h:330,v:0,ver:1,job:'UX designer',bio:'Sinhagad at 5 am, misal pav after. I will judge your playlist kindly.',tags:['Trekking','Filter coffee','Marathi cinema'],qa:['Perfect Sunday','Long walk, a book and zero notifications.'],likesYou:1,open:'Hey! Misal or vada pav, final answer?'},
+ {id:'s2',n:'Rohan',a:27,g:'m',c:'Mumbai',d:8,h:215,v:1,ver:1,job:'Backend engineer',bio:'Local train philosopher. Cooks a surprisingly good pav bhaji.',tags:['Cooking','Cricket','Podcasts'],qa:['Green flag','Replies to texts like a human being.'],likesYou:0,open:'Hi! Cricket person or football person?'},
+ {id:'s3',n:'Isha',a:25,g:'w',c:'Nashik',d:5,h:280,v:2,ver:1,job:'Doctor',bio:'Night shifts, day dreams. Wine country weekends are my love language.',tags:['Vineyards','Photography','Dogs'],qa:['Ask me about','The street dog I adopted last year.'],likesYou:1,open:'Hello! Tell me about the dog situation.'},
+ {id:'s4',n:'Kabir',a:29,g:'m',c:'Nagpur',d:11,h:160,v:2,ver:0,job:'Architect',bio:'Orange city boy. I sketch buildings and burn dinner.',tags:['Sketching','Road trips','Chai'],qa:['Unpopular opinion','Tea is better than coffee.'],likesYou:1,open:'Hey! Chai over coffee, are we fighting?'},
+ {id:'s5',n:'Meera',a:26,g:'w',c:'Kolhapur',d:14,h:20,v:1,ver:1,job:'Chartered accountant',bio:'Spreadsheets by day, kolhapuri tambda rassa by night. Spicy in every way.',tags:['Food','Wrestling fan','Kathak'],qa:['Dating me is','Like a rassa. Hot and worth it.'],likesYou:0,open:'Hi! Tambda or pandhra rassa?'},
+ {id:'s6',n:'Aditya',a:28,g:'m',c:'Pune',d:6,h:185,v:0,ver:1,job:'Startup founder',bio:'Building something small and useful. Also building a bookshelf, badly.',tags:['Books','Badminton','Startups'],qa:['Looking for','Someone to argue about movies with.'],likesYou:1,open:'Hey! Last movie you actually loved?'},
+ {id:'s7',n:'Sana',a:25,g:'w',c:'Mumbai',d:9,h:305,v:2,ver:1,job:'Journalist',bio:'Marine Drive at sunset, sev puri in hand. Ask me anything, I ask better.',tags:['Writing','Street food','Indie music'],qa:['Best date','A walk that turns into dinner.'],likesYou:0,open:'Hi! Best sev puri in the city?'},
+ {id:'s8',n:'Tanmay',a:26,g:'m',c:'Thane',d:12,h:45,v:1,ver:0,job:'Photographer',bio:'Lakes, forts, golden hour. I will take your picture and make you look good.',tags:['Photography','Forts','Biking'],qa:['Weekend plan','A fort nobody has heard of.'],likesYou:1,open:'Hey! Which fort should I visit next?'},
+ {id:'s9',n:'Neha',a:27,g:'w',c:'Pune',d:4,h:250,v:0,ver:1,job:'Data scientist',bio:'Bilingual in Marathi and sarcasm. Quiz night champion, ask my friends.',tags:['Quizzing','Gaming','Mastani'],qa:['My nerdy side','I memorise train timetables for fun.'],likesYou:1,open:'Hi! Quiz category you would destroy me in?'},
+ {id:'s10',n:'Vikram',a:30,g:'m',c:'Sambhajinagar',d:18,h:130,v:2,ver:1,job:'History teacher',bio:'Ajanta and Ellora tour guide on weekends, whether you asked or not.',tags:['History','Caves','Storytelling'],qa:['Fun fact','Kailasa temple was carved top down.'],likesYou:0,open:'Hey! Want a fun fact to start?'}
+];
+
+var S={show:'all',maxAge:40,likeCount:0,swipes:0,queue:[],acted:{},blocked:{},matches:[],chats:{},openChat:null,busy:false,adTimer:null,pendingMatch:null,breakPending:false,user:null,needProfile:false,myProfile:null,poll:null,refilling:false};
+
+/* DATA LAYER: one set of functions, two back ends (sample data or Supabase) */
+var sb=null;
+function loadSB(){return new Promise(function(res,rej){
+  if(window.supabase)return res();
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js';
+  s.onload=res;s.onerror=function(){rej(new Error('Could not load the login library.'))};document.head.appendChild(s);
+})}
+function mapProfile(r){
+  var hh=hashN(r.id);
+  return {id:r.id,n:r.display_name,a:r.age,g:r.gender,c:r.city,d:null,h:hh%360,v:hh%3,ver:r.verified?1:0,job:'',bio:r.bio||'',tags:r.interests||[],qa:null};
+}
+var DB={};
+if(!LIVE){
+  DB.deck=function(){return Promise.resolve(P.slice())};
+  DB.act=function(p,kind,dir){return Promise.resolve(kind==='like'&&!!(p.likesYou||(dir==='super'&&hashN(p.id)%2===0)))};
+  DB.report=function(){return Promise.resolve()};
+  DB.block=function(){return Promise.resolve()};
+  DB.logAd=function(){};
+}else{
+  DB.deck=function(){return sb.rpc('discover',{p_limit:30}).then(function(r){if(r.error)throw r.error;return (r.data||[]).map(mapProfile)})};
+  DB.act=function(p,kind){return sb.rpc('like_profile',{p_target:p.id,p_kind:kind}).then(function(r){if(r.error)throw r.error;return !!r.data})};
+  DB.report=function(p){return sb.rpc('report_profile',{p_target:p.id,p_reason:'reported from card'})};
+  DB.block=function(p){return sb.rpc('block_profile',{p_target:p.id})};
+  DB.logAd=function(kind){sb.rpc('log_ad',{p_kind:kind}).then(function(){},function(){})};
+}
+
+$('#hv1').innerHTML=avatar(215,1);
+$('#hv2').innerHTML=avatar(160,2);
+$('#hv3').insertAdjacentHTML('afterbegin',avatar(330,0));
+$('#hver').innerHTML=IC.check+' Verified';
+$('#fa').innerHTML='<span style="color:var(--pink);display:inline-flex;width:18px">'+IC.heart+'</span> New match nearby';
+$('#fb2').innerHTML='<span style="color:var(--cyan);display:inline-flex;width:14px">'+IC.check+'</span> Verified profiles';
+$('#bNo').innerHTML=IC.x;$('#bYes').innerHTML=IC.heart;$('#bSup').innerHTML=IC.star;
+if(LIVE){$('#demoNote').textContent='Everyone you see here is a real member who confirmed they are 18 or older.';$('#resetDeck').hidden=true;$('#liveActs').hidden=false}
+
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true},3200)}
+function errMsg(e){return (e&&e.message)?e.message:'Something went wrong. Please try again.'}
+
+function setTab(n){
+  if(LIVE&&S.needProfile&&n!=='me'){toast('Please complete your profile first.');n='me'}
+  ['discover','matches','me'].forEach(function(k){var v=$('#v-'+k);if(v)v.hidden=(k!==n)});
+  var map={discover:'tb-d',matches:'tb-m',me:'tb-p'};
+  Object.keys(map).forEach(function(k){$('#'+map[k]).setAttribute('aria-selected',String(k===n))});
+  if(n!=='matches')stopPoll();
+  if(n==='matches'){if(LIVE){loadMatches().then(renderMatches)}else renderMatches()}
+}
+Array.prototype.forEach.call(document.querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){S.openChat=null;setTab(b.getAttribute('data-tab'))})});
+
+/* deck */
+function passFilter(p){
+  if(S.acted[p.id]||S.blocked[p.id])return false;
+  if(S.show!=='all'&&p.g!==S.show)return false;
+  return (p.a==null)||p.a<=S.maxAge;
+}
+function buildQueue(){S.queue=P.filter(passFilter).map(function(p){return {t:'p',p:p}})}
+function cardEl(item,pos){
+  var d=el('div','card');
+  if(item.t==='ad'){
+    d.classList.add('adcard');
+    d.innerHTML='<div class="in"><span class="lab">Sponsored</span><div class="ad"><small>Advertisement</small><div><b>Sponsored card slot</b>300 x 250 or native ad</div></div><button class="btn primary" id="adSkip" disabled>Continue in 4</button></div>';
+  }else{
+    var p=item.p;
+    d.dataset.id=p.id;
+    var meta=[p.job,p.c,(p.d!=null?p.d+' km away':'')].filter(Boolean).join(' · ');
+    d.innerHTML='<div class="ph">'+avatar(p.h,p.v)+'</div><div class="shade"></div>'
+      +'<div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>'
+      +'<button class="more" aria-label="More options">'+IC.dots+'</button>'
+      +'<div class="info"><h2>'+esc(p.n)+' <span>'+p.a+'</span>'+(p.ver?'<em class="ver" style="font-style:normal">'+IC.check+' Verified</em>':'')+'</h2>'
+      +'<p class="meta">'+esc(meta)+'</p>'
+      +(p.bio?'<p class="bio">'+esc(p.bio)+'</p>':'')
+      +((p.qa&&p.qa[1])?'<div class="q"><b>'+esc(p.qa[0])+'</b>'+esc(p.qa[1])+'</div>':'')
+      +((p.tags&&p.tags.length)?'<div class="tags">'+p.tags.map(function(t){return '<span>'+esc(t)+'</span>'}).join('')+'</div>':'')+'</div>';
+  }
+  d.classList.add(pos===0?'top':pos===1?'s1':'s2');
+  d.style.zIndex=String(10-pos);
+  return d;
+}
+function renderDeck(){
+  clearInterval(S.adTimer);
+  var deck=$('#deck');deck.innerHTML='';
+  var wrap=$('#deckwrap');
+  if(!S.queue.length){
+    wrap.classList.remove('onad');
+    var e=el('div','empty');
+    e.innerHTML='<div><h3>You have seen everyone nearby</h3><p>'+(LIVE?'Check back soon, new people join every day.':'Check back soon, or start the sample deck again.')+'</p><div class="cta" style="justify-content:center"><button class="btn primary" id="again">'+(LIVE?'Look again':'Start again')+'</button></div></div>';
+    deck.appendChild(e);$('#again').addEventListener('click',function(){if(LIVE){refill(true)}else resetDeck()});return;
+  }
+  for(var i=Math.min(2,S.queue.length-1);i>=0;i--){deck.appendChild(cardEl(S.queue[i],i))}
+  var top=S.queue[0];
+  wrap.classList.toggle('onad',top.t==='ad');
+  if(top.t==='ad'){
+    if(!top.logged){top.logged=true;DB.logAd('interstitial')}
+    var n=4,b=$('#adSkip');
+    S.adTimer=setInterval(function(){n--;if(n>0){b.textContent='Continue in '+n}else{clearInterval(S.adTimer);b.disabled=false;b.textContent='Continue'}},1000);
+    b.addEventListener('click',function(){if(b.disabled)return;S.queue.shift();renderDeck()});
+  }else{
+    attachDrag($('.card.top',deck));
+    $('.more',$('.card.top',deck)).addEventListener('click',function(ev){toggleMenu(ev,$('.card.top',deck))});
+  }
+}
+function toggleMenu(ev,card){
+  ev.stopPropagation();
+  var old=$('.menu',card);if(old){old.remove();return}
+  var m=el('div','menu');
+  var r=el('button','','Report profile'),b=el('button','warn','Block');
+  r.addEventListener('click',function(){m.remove();skipOut(card,'Reported. Thanks for keeping Crushwave safe.',false)});
+  b.addEventListener('click',function(){m.remove();skipOut(card,'Blocked. You will not see each other again.',true)});
+  m.appendChild(r);m.appendChild(b);card.appendChild(m);
+}
+function skipOut(card,msg,block){
+  var id=card.dataset.id,top=S.queue[0];
+  if(block)S.blocked[id]=1;else S.acted[id]=1;
+  var p=top&&top.p;
+  if(p){(block?DB.block(p):DB.report(p)).then(null,function(){})}
+  card.style.transform='translateY(-40px) scale(.9)';card.style.opacity='0';
+  setTimeout(function(){S.queue.shift();renderDeck();toast(msg)},240);
+}
+function attachDrag(c){
+  var sx=0,dx=0,on=false;
+  c.addEventListener('pointerdown',function(e){
+    if(e.target.closest('button'))return;
+    var mn=$('.menu',c);if(mn)mn.remove();
+    on=true;sx=e.clientX;dx=0;try{c.setPointerCapture(e.pointerId)}catch(x){}c.style.transition='none';
+  });
+  c.addEventListener('pointermove',function(e){
+    if(!on)return;dx=e.clientX-sx;
+    c.style.transform='translateX('+dx+'px) rotate('+(dx/18)+'deg)';
+    c.classList.toggle('lk',dx>40);c.classList.toggle('np',dx<-40);
+  });
+  function end(){
+    if(!on)return;on=false;c.style.transition='';
+    if(dx>110)swipe('like');else if(dx<-110)swipe('pass');
+    else{c.style.transform='';c.classList.remove('lk','np')}
+    dx=0;
+  }
+  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
+}
+
+/* ad rules: sponsored card every 15 profiles viewed, 5 second break every 10 likes */
+function updateCounters(){
+  var l=LIKES_BEFORE_BREAK-(S.likeCount%LIKES_BEFORE_BREAK);
+  $('#likeTxt').textContent='Ad break in '+l+(l===1?' like':' likes');
+  $('#likeBar').style.width=((S.likeCount%LIKES_BEFORE_BREAK)*100/LIKES_BEFORE_BREAK)+'%';
+  var m=PROFILES_BEFORE_AD-(S.swipes%PROFILES_BEFORE_AD);
+  $('#adTxt').textContent='Sponsored card in '+m+(m===1?' profile':' profiles');
+}
+function swipe(dir){
+  if(S.busy)return;
+  var top=S.queue[0];if(!top||top.t!=='p')return;
+  S.busy=true;
+  var liking=(dir==='like'||dir==='super');
+  var card=$('.card.top',$('#deck'));
+  if(card){
+    card.classList.add(liking?'lk':'np');
+    card.style.transform='translateX('+(liking?700:-700)+'px) rotate('+(liking?28:-28)+'deg)';card.style.opacity='0';
+  }
+  setTimeout(function(){
+    var p=top.p;S.acted[p.id]=1;S.queue.shift();S.swipes++;
+    var doBreak=false;
+    if(liking){S.likeCount++;if(S.likeCount%LIKES_BEFORE_BREAK===0)doBreak=true}
+    if(S.swipes%PROFILES_BEFORE_AD===0&&S.queue.length>0)S.queue.unshift({t:'ad'});
+    S.busy=false;updateCounters();renderDeck();
+    if(LIVE&&S.queue.filter(function(q){return q.t==='p'}).length<=3)refill(false);
+    DB.act(p,liking?'like':'pass',dir).then(function(matched){
+      if(matched){S.breakPending=S.breakPending||doBreak;showMatch(p)}
+      else if(doBreak)openBreak();
+    },function(e){toast(errMsg(e));if(doBreak)openBreak()});
+  },260);
+}
+$('#bNo').addEventListener('click',function(){swipe('pass')});
+$('#bYes').addEventListener('click',function(){swipe('like')});
+$('#bSup').addEventListener('click',function(){swipe('super')});
+document.addEventListener('keydown',function(e){
+  if($('#v-discover').hidden)return;
+  var t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT')return;
+  if(!$('#ovGate').hidden||!$('#ovAuth').hidden||!$('#ovMatch').hidden||!$('#ovBreak').hidden)return;
+  if(e.key==='ArrowRight')swipe('like');else if(e.key==='ArrowLeft')swipe('pass');
+});
+
+function refill(showErr){
+  if(S.refilling)return;S.refilling=true;
+  var wasEmpty=!S.queue.length;
+  DB.deck().then(function(list){
+    var have={};S.queue.forEach(function(q){if(q.p)have[q.p.id]=1});
+    list.forEach(function(p){if(!have[p.id]&&passFilter(p))S.queue.push({t:'p',p:p})});
+    S.refilling=false;
+    if(wasEmpty&&!S.busy)renderDeck();
+  },function(e){S.refilling=false;if(showErr)toast(errMsg(e))});
+}
+
+/* filters */
+function applyFilters(){
+  if(LIVE){S.queue=S.queue.filter(function(q){return q.t==='ad'||passFilter(q.p)});renderDeck();refill(false)}
+  else{buildQueue();renderDeck()}
+}
+Array.prototype.forEach.call(document.querySelectorAll('#showChips .chip'),function(b){
+  b.addEventListener('click',function(){
+    S.show=b.getAttribute('data-v');
+    Array.prototype.forEach.call(document.querySelectorAll('#showChips .chip'),function(x){x.setAttribute('aria-pressed',String(x===b))});
+    applyFilters();
+  });
+});
+$('#maxAge').addEventListener('input',function(){S.maxAge=Number(this.value);$('#maxAgeV').textContent=this.value;applyFilters()});
+function resetDeck(){S.acted={};S.blocked={};buildQueue();renderDeck()}
+$('#resetDeck').addEventListener('click',resetDeck);
+
+/* overlays */
+function show(id){$(id).hidden=false}
+function hide(id){$(id).hidden=true}
+function showMatch(p){
+  S.pendingMatch=p;
+  if(!LIVE&&!S.matches.some(function(m){return m.id===p.id})){S.matches.push({id:p.id,p:p,last:''});S.chats[p.id]=[{w:'sys',t:'You matched with '+p.n+'. Say something kind.'}]}
+  if(LIVE)loadMatches();
+  updateBadge();
+  var pr=$('#pair');pr.innerHTML='';
+  var a=el('div','av');a.innerHTML=avatar(280,1);var b=el('div','av');b.innerHTML=avatar(p.h,p.v);
+  pr.appendChild(a);pr.appendChild(b);
+  $('#mP').textContent='You and '+p.n+' liked each other. Start a conversation while the spark is fresh.';
+  show('#ovMatch');
+}
+$('#mKeep').addEventListener('click',function(){
+  hide('#ovMatch');
+  if(S.breakPending){S.breakPending=false;openBreak()}
+});
+$('#mChat').addEventListener('click',function(){
+  var p=S.pendingMatch;hide('#ovMatch');
+  var go=function(){var m=S.matches.filter(function(x){return x.p.id===p.id})[0];S.openChat=m?m.id:null;setTab('matches')};
+  if(LIVE){loadMatches().then(go)}else go();
+  if(S.breakPending){S.breakPending=false;setTimeout(openBreak,400)}
+});
+function updateBadge(){var m=$('#mcount');m.textContent=S.matches.length;m.hidden=S.matches.length===0}
+
+var rt;
+function openBreak(){
+  DB.logAd('video');
+  var g=$('#rGo'),bar=$('#rBar');g.disabled=true;g.textContent='Continue in 5';bar.style.width='0';
+  show('#ovBreak');
+  var t0=Date.now();clearInterval(rt);
+  rt=setInterval(function(){
+    var f=Math.min(1,(Date.now()-t0)/5000);bar.style.width=(f*100)+'%';
+    var left=Math.max(0,Math.ceil(5-(Date.now()-t0)/1000));
+    if(f>=1){clearInterval(rt);g.disabled=false;g.textContent='Continue'}else g.textContent='Continue in '+left;
+  },100);
+}
+$('#rGo').addEventListener('click',function(){if(this.disabled)return;hide('#ovBreak')});
+
+/* matches + chat */
+function loadMatches(){
+  if(!LIVE)return Promise.resolve();
+  return sb.rpc('my_matches').then(function(r){
+    if(r.error)throw r.error;
+    S.matches=(r.data||[]).map(function(x){
+      var hh=hashN(x.user_id);
+      return {id:x.match_id,p:{id:x.user_id,n:x.display_name,a:x.age,g:x.gender,c:x.city,h:hh%360,v:hh%3,job:'',tags:[],qa:null},last:x.last_body||''};
+    });
+    updateBadge();
+  }).catch(function(e){toast(errMsg(e))});
+}
+function loadMessages(id){
+  return sb.from('messages').select('id,sender,body,created_at').eq('match_id',id).order('id',{ascending:true}).limit(200).then(function(r){
+    if(r.error)throw r.error;
+    S.chats[id]=[{w:'sys',t:'You matched. Say something kind.'}].concat((r.data||[]).map(function(m){return {w:m.sender===S.user.id?'me':'them',t:m.body}}));
+  });
+}
+function stopPoll(){if(S.poll){clearInterval(S.poll);S.poll=null}}
+function renderMatches(){
+  var v=$('#v-matches');v.innerHTML='';
+  if(S.openChat!=null){
+    var cur=S.matches.filter(function(m){return m.id===S.openChat})[0];
+    if(!cur){S.openChat=null}else{
+      if(LIVE){loadMessages(cur.id).then(function(){renderChat(v,cur);startPoll(cur,v)},function(e){toast(errMsg(e))})}else renderChat(v,cur);
+      return;
+    }
+  }
+  stopPoll();
+  if(!S.matches.length){
+    var e=el('div','panel');e.style.maxWidth='560px';e.style.margin='0 auto';e.style.textAlign='center';
+    e.innerHTML='<h3>No matches yet</h3><p class="meta" style="color:var(--mute)">When you and someone else like each other, the conversation starts here.</p><div class="cta" style="justify-content:center"><button class="btn primary" id="goD">Go and swipe</button></div>';
+    v.appendChild(e);$('#goD').addEventListener('click',function(){setTab('discover')});return;
+  }
+  var l=el('div','mlist');
+  S.matches.forEach(function(m){
+    var p=m.p,msgs=S.chats[m.id],last=m.last||(msgs&&msgs.length&&msgs[msgs.length-1].w!=='sys'?msgs[msgs.length-1].t:'');
+    var r=el('button','mrow');var av=el('div','av');av.innerHTML=avatar(p.h,p.v);
+    var t=el('div','t');t.appendChild(el('b','',p.n+', '+p.a));t.appendChild(el('span','s',last||'Say hello'));
+    r.appendChild(av);r.appendChild(t);
+    r.addEventListener('click',function(){S.openChat=m.id;renderMatches()});
+    l.appendChild(r);
+  });
+  v.appendChild(l);
+}
+function startPoll(cur,root){
+  stopPoll();
+  S.poll=setInterval(function(){
+    if(S.openChat!==cur.id||$('#v-matches').hidden){stopPoll();return}
+    var before=(S.chats[cur.id]||[]).length;
+    loadMessages(cur.id).then(function(){
+      if((S.chats[cur.id]||[]).length!==before){var ms=$('.msgs',root);if(ms){ms.innerHTML='';S.chats[cur.id].forEach(function(m){ms.appendChild(bubble(m))});ms.scrollTop=ms.scrollHeight}}
+    },function(){});
+  },4000);
+}
+function bubble(m){return el('div','b '+(m.w==='me'?'me':m.w==='sys'?'sys':'them'),m.t)}
+function renderChat(root,m){
+  root.innerHTML='';
+  var p=m.p;
+  var c=el('div','chat');
+  var hd=el('div','chd');
+  var back=el('button','back');back.innerHTML=IC.back;back.setAttribute('aria-label','Back to matches');
+  back.addEventListener('click',function(){S.openChat=null;stopPoll();renderMatches()});
+  var av=el('div','av');av.style.width='42px';av.style.height='42px';av.innerHTML=avatar(p.h,p.v);
+  var nm=el('div');nm.appendChild(el('b','',p.n));var sub=el('div','meta',[p.job,p.c].filter(Boolean).join(' · '));sub.style.color='var(--mute)';nm.appendChild(sub);
+  hd.appendChild(back);hd.appendChild(av);hd.appendChild(nm);
+  var ms=el('div','msgs');ms.setAttribute('aria-live','polite');
+  (S.chats[m.id]||[]).forEach(function(x){ms.appendChild(bubble(x))});
+  var ice=el('div','ice');
+  [(p.tags&&p.tags[0]?'Hey '+p.n+'! '+p.tags[0]+' sounds fun.':'Hey '+p.n+'! How is your week going?'),'What is your idea of a perfect weekend?','Coffee this weekend?'].forEach(function(t){
+    var b=el('button','',t);b.type='button';b.addEventListener('click',function(){send(t)});ice.appendChild(b);
+  });
+  var f=el('form','cin');
+  var inp=el('input');inp.type='text';inp.id='chatIn';inp.placeholder='Write a message';inp.maxLength=300;inp.autocomplete='off';inp.setAttribute('aria-label','Message');
+  var sbtn=el('button');sbtn.type='submit';sbtn.setAttribute('aria-label','Send');sbtn.innerHTML=IC.send;
+  f.appendChild(inp);f.appendChild(sbtn);
+  f.addEventListener('submit',function(e){e.preventDefault();var t=inp.value.trim();if(t){inp.value='';send(t)}});
+  c.appendChild(hd);c.appendChild(ms);c.appendChild(ice);c.appendChild(f);
+  root.appendChild(c);ms.scrollTop=ms.scrollHeight;
+  var replies=[p.open||'Hey! Glad we matched.','Haha, I like that. Tell me more.','Okay you are fun. Weekend works for me.','Let us do a video call first, then plan something simple.'];
+  function send(t){
+    var bad=modCheck(t,true);
+    if(bad){toast('That message has '+MODMSG[bad]+' in it. Social media IDs, phone numbers and links cannot be shared on Crushwave.');return}
+    if(LIVE){
+      sb.from('messages').insert({match_id:m.id,sender:S.user.id,body:t}).then(function(r){
+        if(r.error){toast(errMsg(r.error));return}
+        var x={w:'me',t:t};S.chats[m.id].push(x);ms.appendChild(bubble(x));ms.scrollTop=ms.scrollHeight;m.last=t;
+      });
+      return;
+    }
+    var x={w:'me',t:t};S.chats[m.id].push(x);ms.appendChild(bubble(x));ms.scrollTop=ms.scrollHeight;
+    var n=S.chats[m.id].filter(function(y){return y.w==='me'}).length;
+    var ty=el('div','b them typing');ty.innerHTML='<i></i><i></i><i></i>';ms.appendChild(ty);ms.scrollTop=ms.scrollHeight;
+    setTimeout(function(){
+      ty.remove();
+      var r={w:'them',t:replies[Math.min(n-1,replies.length-1)]};S.chats[m.id].push(r);
+      if(S.openChat===m.id&&ms.isConnected){ms.appendChild(bubble(r));ms.scrollTop=ms.scrollHeight}
+    },1200);
+  }
+}
+
+/* my profile */
+function myInterests(){return $('#meInt').value.split(',').map(function(s){return s.trim()}).filter(Boolean).slice(0,6)}
+function prevMe(){
+  var a=ageOf($('#meDob').value);
+  $('#mePrevName').textContent=($('#meName').value||'Your name')+(a!=null&&a>0?', '+a:'');
+  $('#mePrevMeta').textContent=$('#meCity').value||'Your city';
+  $('#mePrevBio').textContent=$('#meBio').value;
+  var hh=hashN($('#meName').value||'you');$('#meAv').innerHTML=avatar(hh%360,hh%3);
+}
+['#meName','#meDob','#meCity','#meBio','#meInt'].forEach(function(s){$(s).addEventListener('input',prevMe)});
+function fillMe(x){
+  x=x||{};
+  $('#meName').value=x.display_name||'';$('#meDob').value=x.birth_date||'';$('#meGender').value=x.gender||'w';
+  $('#meCity').value=x.city||'';$('#meLook').value=x.looking_for||'all';$('#meInt').value=(x.interests||[]).join(', ');$('#meBio').value=x.bio||'';
+  var has=!!x.consent_at;$('#consentRow').hidden=has;$('#meConsent').checked=has;
+  prevMe();
+}
+function setErr(m){$('#meErr').textContent=m||''}
+$('#meSave').addEventListener('click',function(){
+  setErr('');
+  var name=$('#meName').value.trim(),dob=$('#meDob').value,city=$('#meCity').value.trim(),bio=$('#meBio').value.trim(),ints=myInterests();
+  if(name.length<2){setErr('Please enter your first name.');return}
+  var a=ageOf(dob);
+  if(a==null){setErr('Please enter your date of birth.');return}
+  if(a<18){setErr('Crushwave is only for people who are 18 or older.');return}
+  if(city.length<2){setErr('Please enter your city.');return}
+  var fields=[['name',name],['bio',bio],['interests',ints.join(' ')]];
+  for(var i=0;i<fields.length;i++){var r=modCheck(fields[i][1],true);if(r){setErr('Your '+fields[i][0]+' has '+MODMSG[r]+' in it. Please remove it.');return}}
+  if(!$('#meConsent').checked){setErr('Please tick the consent box to continue.');return}
+  var row={display_name:name,birth_date:dob,gender:$('#meGender').value,looking_for:$('#meLook').value,city:city,bio:bio,interests:ints};
+  if(!LIVE){store('crushwave.me',JSON.stringify(row));toast('Profile saved on this device.');return}
+  var btn=this;btn.disabled=true;
+  row.consent_at=(S.myProfile&&S.myProfile.consent_at)||new Date().toISOString();
+  var q;
+  if(S.myProfile){q=sb.from('profiles').update(row).eq('id',S.user.id).select().single()}
+  else{row.id=S.user.id;q=sb.from('profiles').insert(row).select().single()}
+  q.then(function(r){
+    btn.disabled=false;
+    if(r.error){setErr(errMsg(r.error));return}
+    S.myProfile=r.data;fillMe(r.data);
+    if(S.needProfile){S.needProfile=false;toast('Profile saved. Happy swiping.');setTab('discover');refill(true)}
+    else toast('Profile saved.');
+  });
+});
+if(!LIVE){try{var sv=JSON.parse(store('crushwave.me')||'null');fillMe(sv||undefined)}catch(e){fillMe()}}else{fillMe()}
+
+/* live: account actions */
+$('#logoutBtn').addEventListener('click',function(){if(sb)sb.auth.signOut().then(function(){location.reload()})});
+$('#delBtn').addEventListener('click',function(){$('#delConfirm').hidden=false;this.hidden=true});
+$('#delNo').addEventListener('click',function(){$('#delConfirm').hidden=true;$('#delBtn').hidden=false});
+$('#delYes').addEventListener('click',function(){
+  sb.rpc('delete_my_account').then(function(r){
+    if(r.error){toast(errMsg(r.error));return}
+    sb.auth.signOut().then(function(){try{localStorage.clear()}catch(e){};location.reload()});
+  });
+});
+
+$('#anchorX').addEventListener('click',function(){$('#anchor').hidden=true;document.body.style.paddingBottom='24px'});
+
+/* live: login by email code, mobile number code, or Google */
+var amode='email';
+function authMsg(m,bad){var e=$('#aMsg');e.textContent=m||'';e.style.color=bad?'var(--pink)':'var(--cyan)'}
+function normPhone(v){var d=String(v).replace(/\D/g,'');if(d.length===12&&d.indexOf('91')===0)d=d.slice(2);if(d.length===11&&d.charAt(0)==='0')d=d.slice(1);return /^[6-9]\d{9}$/.test(d)?'+91'+d:null}
+function setMode(m){
+  amode=m;
+  Array.prototype.forEach.call(document.querySelectorAll('#aMode .chip'),function(x){x.setAttribute('aria-pressed',String(x.getAttribute('data-m')===m))});
+  $('#aEmailBox').hidden=(m!=='email');$('#aPhoneBox').hidden=(m!=='phone');
+  $('#aCodeBox').hidden=true;$('#aVerify').hidden=true;$('#aSend').textContent='Send code';authMsg('');
+}
+if(!PHONE_LOGIN){$('#aMode').hidden=true}
+Array.prototype.forEach.call(document.querySelectorAll('#aMode .chip'),function(b){b.addEventListener('click',function(){setMode(b.getAttribute('data-m'))})});
+$('#aSend').addEventListener('click',function(){
+  var b=this,req;
+  if(amode==='email'){
+    var em=$('#aEmail').value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){authMsg('Please enter a valid email address.',true);return}
+    req=sb.auth.signInWithOtp({email:em,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});
+  }else{
+    var ph=normPhone($('#aPhone').value);
+    if(!ph){authMsg('Please enter a 10 digit Indian mobile number.',true);return}
+    req=sb.auth.signInWithOtp({phone:ph,options:{shouldCreateUser:true}});
+  }
+  b.disabled=true;authMsg('Sending...');
+  req.then(function(r){
+    b.disabled=false;
+    if(r.error){authMsg(/provider|sms|twilio|not enabled/i.test(errMsg(r.error))?'Mobile login is not switched on yet. Please use email.':errMsg(r.error),true);return}
+    authMsg(amode==='email'?'Check your email. Enter the code below, or tap the link in the email.':'We sent a code by SMS. Enter it below.');
+    $('#aCodeBox').hidden=false;$('#aVerify').hidden=false;b.textContent='Send again';$('#aCode').focus();
+  });
+});
+$('#aVerify').addEventListener('click',function(){
+  var code=$('#aCode').value.trim();
+  if(!code){authMsg('Enter the code we sent you.',true);return}
+  var b=this;b.disabled=true;
+  var req=amode==='email'
+    ?sb.auth.verifyOtp({email:$('#aEmail').value.trim(),token:code,type:'email'})
+    :sb.auth.verifyOtp({phone:normPhone($('#aPhone').value),token:code,type:'sms'});
+  req.then(function(r){
+    b.disabled=false;
+    if(r.error){authMsg(errMsg(r.error),true)}
+  });
+});
+$('#aGoogle').addEventListener('click',function(){
+  sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}}).then(function(r){if(r.error)authMsg(errMsg(r.error),true)});
+});
+function whoLabel(u){return u.email||(u.phone?(String(u.phone).charAt(0)==='+'?u.phone:'+'+u.phone):'your account')}
+function afterLogin(user){
+  if(S.user&&S.user.id===user.id)return;
+  S.user=user;hide('#ovAuth');
+  sb.rpc('log_login').then(function(){},function(){});
+  DB.logAd('banner');
+  $('#whoAmI').hidden=false;$('#whoAmI').textContent='Signed in as '+whoLabel(user);
+  sb.from('profiles').select('*').eq('id',user.id).maybeSingle().then(function(r){
+    if(r.error){toast(errMsg(r.error));return}
+    S.myProfile=r.data;
+    if(!r.data||!r.data.consent_at){S.needProfile=true;fillMe(r.data);setTab('me');toast('Welcome! Finish your profile to start.');return}
+    fillMe(r.data);
+    if(r.data.status!=='active'){toast('Your profile is under review, so you cannot see other members right now.')}
+    refill(true);loadMatches();
+  });
+}
+function initLive(){
+  loadSB().then(function(){
+    sb=window.supabase.createClient(CONFIG.url,CONFIG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    sb.auth.onAuthStateChange(function(ev,sess){if(ev==='SIGNED_IN'&&sess&&sess.user)afterLogin(sess.user)});
+    return sb.auth.getSession();
+  }).then(function(r){
+    if(r.data&&r.data.session)afterLogin(r.data.session.user);else show('#ovAuth');
+  }).catch(function(e){toast(errMsg(e))});
+}
+
+/* age gate */
+function afterGate(){hide('#ovGate');if(LIVE)initLive()}
+if(store('crushwave.18')==='1'){afterGate()}
+$('#gYes').addEventListener('click',function(){store('crushwave.18','1');afterGate()});
+$('#gNo').addEventListener('click',function(){
+  $('#gP').textContent='Sorry, Crushwave is only for people who are 18 or older. Come back when you are.';
+  $('#gRow').hidden=true;
+});
+
+updateCounters();
+if(!LIVE){buildQueue()}
+renderDeck();
+})();
+</script>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw-app.js').catch(function(){})})}</script>
+</body>
+</html>
