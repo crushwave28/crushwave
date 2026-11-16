@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a0612">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Crushwave Owner">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Crushwave Owner Console</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#0a0612;--bg2:#120a22;--card:#1a1030;--card2:#241842;--line:rgba(255,255,255,.12);--fg:#f7f2ff;--mute:#b4aad0;--pink:#ff3d8b;--violet:#8b5cf6;--cyan:#22d3ee;--amber:#ffb547;--ok:#34d399;--grad:linear-gradient(120deg,#ff3d8b,#8b5cf6 55%,#22d3ee);color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.5;padding:0 max(16px,env(safe-area-inset-left,0px)) 40px max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select{font:inherit;color:var(--fg);background:var(--bg2);border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 0;border-bottom:1px solid var(--line)}
+header h1{font-size:20px;margin:0;font-weight:800}
+header h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sp{flex:1}
+.who{color:var(--mute);font-size:13px;overflow-wrap:anywhere}
+.btn{padding:9px 16px;border-radius:999px;font-weight:800;font-size:14px;border:1.5px solid var(--line);background:rgba(255,255,255,.04)}
+.btn:hover{border-color:var(--violet)}
+.btn.p{background:var(--grad);border:0;color:#fff}
+.btn.d{border-color:rgba(255,61,139,.6);color:var(--pink)}
+.btn.g{border-color:rgba(52,211,153,.6);color:var(--ok)}
+.btn.s{padding:5px 11px;font-size:12px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:16px 0 4px}
+.tabs button{padding:8px 16px;border-radius:999px;font-weight:700;font-size:14px;color:var(--mute);white-space:nowrap;border:1.5px solid transparent}
+.tabs button[aria-selected="true"]{background:var(--card2);color:var(--fg);border-color:var(--violet)}
+.badge{background:var(--pink);color:#fff;border-radius:999px;font-size:11px;padding:1px 7px;margin-left:6px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:28px;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{color:var(--mute);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px;min-width:0}
+.panel h2{font-size:15px;margin:0 0 12px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px}
+.bars div{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+.bars i{display:block;width:100%;background:var(--grad);border-radius:5px 5px 0 0;min-height:2px}
+.bars small{font-size:10px;color:var(--mute);font-variant-numeric:tabular-nums}
+.bars em{font-style:normal;font-size:10px;color:var(--fg);font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums}
+th{color:var(--mute);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+td.wrapc{white-space:normal;min-width:180px}
+.pill{font-size:11px;font-weight:800;padding:2px 9px;border-radius:999px;border:1px solid var(--line)}
+.pill.active{color:var(--ok);border-color:rgba(52,211,153,.5)}
+.pill.review{color:var(--amber);border-color:rgba(255,181,71,.5)}
+.pill.banned{color:var(--pink);border-color:rgba(255,61,139,.5)}
+.pill.open{color:var(--amber);border-color:rgba(255,181,71,.5)}
+.pill.resolved{color:var(--mute)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row input{flex:1;min-width:160px}
+.words{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.words span{display:inline-flex;gap:8px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px;font-size:13px}
+.words button{width:22px;height:22px;border-radius:50%;background:rgba(255,61,139,.2);color:var(--pink);font-weight:800;line-height:1}
+.msg{color:var(--pink);font-size:13px;min-height:20px;margin-top:8px}
+.muted{color:var(--mute);font-size:13px}
+.login{max-width:420px;margin:12vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px}
+.login h2{margin:0 0 6px}
+.login .f{display:grid;gap:6px;margin-top:14px}
+.login label{font-size:12px;color:var(--mute);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--card2);border:1px solid var(--line);padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px;z-index:50;max-width:calc(100% - 32px)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="setup" class="login" hidden>
+    <h2>Setup needed</h2>
+    <p class="muted">Open this file and paste your Supabase Project URL and public anon key into <code>CONFIG</code> near the bottom. Do not use the service_role key.</p>
+  </div>
+
+  <div id="login" class="login" hidden>
+    <h2>Owner console</h2>
+    <p class="muted">Log in with the email you registered as owner. Anyone else is turned away by the database.</p>
+    <div class="f"><label for="em">Email</label><input type="email" id="em" autocomplete="email"></div>
+    <div class="f" id="codeBox" hidden><label for="code">Code from your email</label><input type="text" id="code" inputmode="numeric" maxlength="8" autocomplete="one-time-code"></div>
+    <div class="row" style="margin-top:16px"><button class="btn p" id="send">Send code</button><button class="btn p" id="verify" hidden>Log in</button></div>
+    <p class="msg" id="lmsg" role="status"></p>
+  </div>
+
+  <div id="app" hidden>
+    <header>
+      <h1><span>Crushwave</span> owner console</h1>
+      <span class="sp"></span>
+      <span class="who" id="who"></span>
+      <button class="btn p" id="installBtn" hidden>Install app</button>
+      <button class="btn" id="out">Log out</button>
+    </header>
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" aria-selected="true" data-t="overview">Overview</button>
+      <button role="tab" aria-selected="false" data-t="members">Members</button>
+      <button role="tab" aria-selected="false" data-t="logins">Logins</button>
+      <button role="tab" aria-selected="false" data-t="reports">Reports <span class="badge" id="rb" hidden>0</span></button>
+      <button role="tab" aria-selected="false" data-t="words">Blocked words</button>
+      <button role="tab" aria-selected="false" data-t="ads">Ads</button>
+    </div>
+
+    <section id="t-overview">
+      <div class="grid" id="stats"></div>
+      <div class="panel"><h2>New members, last 14 days</h2><div class="bars" id="signBars"></div></div>
+      <div class="panel"><h2>Ads shown, last 14 days</h2><div class="bars" id="adBars"></div>
+        <div class="legend">Each bar is the total shown that day (sponsored cards, ad breaks and banners).</div></div>
+    </section>
+
+    <section id="t-members" hidden>
+      <div class="panel">
+        <div class="row"><input id="q" placeholder="Search name, email, mobile or city"><button class="btn p" id="qgo">Search</button><button class="btn" id="csv">Export CSV</button></div>
+        <p class="muted" style="margin:10px 0 0">Shows the latest 100 matches. Passwords are never stored by Crushwave, so they cannot be shown here.</p>
+      </div>
+      <div class="panel tw"><table><thead><tr><th>Name</th><th>Email</th><th>Mobile</th><th>Age</th><th>City</th><th>Status</th><th>Verified</th><th>Joined</th><th>Last login</th><th>Logins</th><th>Actions</th></tr></thead><tbody id="mbody"></tbody></table></div>
+    </section>
+
+    <section id="t-logins" hidden>
+      <div class="panel tw"><h2>Latest logins <span class="muted" style="font-weight:500">(updates every 30 seconds)</span></h2><table><thead><tr><th>When</th><th>Name</th><th>Email</th><th>Mobile</th><th>City</th></tr></thead><tbody id="lbody"></tbody></table></div>
+    </section>
+
+    <section id="t-reports" hidden>
+      <div class="panel tw"><h2>Reports</h2><table><thead><tr><th>When</th><th>Reported profile</th><th>Reason</th><th>By</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rbody"></tbody></table>
+        <p class="muted">Three different people reporting a profile hides it automatically until you review it here.</p></div>
+    </section>
+
+    <section id="t-words" hidden>
+      <div class="panel">
+        <h2>Blocked words</h2>
+        <p class="muted" style="margin-top:0">Anyone typing these in a bio, name, interests or message is stopped, even when they write f*ck or sh1t. Add Marathi, Hindi or any local words you want blocked.</p>
+        <div class="row"><input id="nw" maxlength="40" placeholder="Add a word or short phrase"><button class="btn p" id="addw">Add</button></div>
+        <div class="words" id="wlist"></div>
+      </div>
+    </section>
+
+    <section id="t-ads" hidden>
+      <div class="panel tw"><h2>Ads shown by day</h2><table><thead><tr><th>Day</th><th>Sponsored cards</th><th>Ad breaks</th><th>Banners</th><th>Total</th></tr></thead><tbody id="abody"></tbody></table>
+        <p class="muted">These are impressions served by Crushwave. Your real income comes from the ad network's own report, which counts paid views and clicks.</p></div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* Paste your Supabase Project URL and the public anon (publishable) key. NEVER the service_role key. */
+var CONFIG={url:'https://ibnsumdcmtpwzxgnroqe.supabase.co',key:'sb_publishable_1gdtSPyvvjFX3JyifAxFoQ_aadQqguU'};
+
+var $=function(s,r){return (r||document).querySelector(s)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function fmt(d){if(!d)return '-';var x=new Date(d);return isNaN(x)?'-':x.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+function fday(d){var x=new Date(d);return isNaN(x)?d:x.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(function(){t.hidden=true},3000)}
+function em(e){return (e&&e.message)?e.message:'Something went wrong.'}
+
+if(!CONFIG.url||!CONFIG.key){$('#setup').hidden=false;return}
+var sb=window.supabase.createClient(CONFIG.url,CONFIG.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+var users=[];
+
+function lmsg(m,bad){var e=$('#lmsg');e.textContent=m||'';e.style.color=bad?'var(--pink)':'var(--cyan)'}
+$('#send').addEventListener('click',function(){
+  var v=$('#em').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){lmsg('Enter a valid email.',true);return}
+  var b=this;b.disabled=true;lmsg('Sending...');
+  /* shouldCreateUser is false: this page can never create new accounts */
+  sb.auth.signInWithOtp({email:v,options:{shouldCreateUser:false,emailRedirectTo:location.origin+location.pathname}}).then(function(r){
+    b.disabled=false;
+    if(r.error){lmsg(em(r.error),true);return}
+    lmsg('Check your email for the code.');$('#codeBox').hidden=false;$('#verify').hidden=false;$('#code').focus();
+  });
+});
+$('#verify').addEventListener('click',function(){
+  var b=this;b.disabled=true;
+  sb.auth.verifyOtp({email:$('#em').value.trim(),token:$('#code').value.trim(),type:'email'}).then(function(r){b.disabled=false;if(r.error)lmsg(em(r.error),true)});
+});
+$('#out').addEventListener('click',function(){sb.auth.signOut().then(function(){location.reload()})});
+
+function gate(sess){
+  if(!sess||!sess.user){$('#login').hidden=false;$('#app').hidden=true;return}
+  sb.rpc('is_admin').then(function(r){
+    if(r.error||r.data!==true){
+      $('#login').hidden=false;$('#app').hidden=true;
+      lmsg('This account is not an owner account.',true);
+      sb.auth.signOut();return;
+    }
+    $('#login').hidden=true;$('#app').hidden=false;$('#who').textContent=sess.user.email;
+    loadAll();
+  });
+}
+sb.auth.onAuthStateChange(function(ev,sess){if(ev==='SIGNED_IN')gate(sess)});
+sb.auth.getSession().then(function(r){gate(r.data&&r.data.session)});
+
+/* tabs */
+Array.prototype.forEach.call(document.querySelectorAll('#tabs button'),function(b){
+  b.addEventListener('click',function(){
+    var t=b.getAttribute('data-t');
+    Array.prototype.forEach.call(document.querySelectorAll('#tabs button'),function(x){x.setAttribute('aria-selected',String(x===b))});
+    ['overview','members','logins','reports','words','ads'].forEach(function(k){$('#t-'+k).hidden=(k!==t)});
+  });
+});
+
+function loadAll(){loadOverview();loadMembers('');loadLogins();loadReports();loadWords();loadAds()}
+/* live feed: refresh the numbers every 30 seconds while the app is open */
+setInterval(function(){if(document.hidden||$('#app').hidden)return;loadOverview();loadLogins();loadReports()},30000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&!$('#app').hidden){loadOverview();loadLogins();loadReports()}});
+
+function bars(el,rows,key,lab){
+  var max=Math.max.apply(null,rows.map(function(r){return Number(r[key])}).concat([1]));
+  el.innerHTML=rows.map(function(r){var n=Number(r[key]);return '<div title="'+esc(lab(r))+': '+n+'"><em>'+n+'</em><i style="height:'+Math.round(n*92/max)+'px"></i><small>'+esc(lab(r))+'</small></div>'}).join('');
+}
+function loadOverview(){
+  sb.rpc('admin_overview').then(function(r){
+    if(r.error){toast(em(r.error));return}
+    var d=r.data,items=[['Members',d.users],['Joined today',d.new_today],['Logins today',d.logins_today],['Active, 7 days',d.active_7d],['Matches',d.matches],['Open reports',d.open_reports],['Ads shown today',d.ads_today]];
+    $('#stats').innerHTML=items.map(function(i){return '<div class="stat"><b>'+esc(i[1])+'</b><span>'+esc(i[0])+'</span></div>'}).join('');
+    var rb=$('#rb');rb.textContent=d.open_reports;rb.hidden=!d.open_reports;
+  });
+  sb.rpc('admin_signups',{p_days:14}).then(function(r){if(!r.error)bars($('#signBars'),r.data||[],'n',function(x){return fday(x.day)})});
+}
+function loadMembers(q){
+  sb.rpc('admin_users',{p_search:q||'',p_limit:100}).then(function(r){
+    if(r.error){toast(em(r.error));return}
+    users=r.data||[];
+    $('#mbody').innerHTML=users.map(function(u){
+      return '<tr><td>'+esc(u.display_name)+'</td><td>'+esc(u.email||"-")+'</td><td>'+esc(u.phone?"+"+String(u.phone).replace(/^\+/,""):"-")+'</td><td>'+esc(u.age)+'</td><td>'+esc(u.city)+'</td>'
+        +'<td><span class="pill '+esc(u.status)+'">'+esc(u.status)+'</span></td><td>'+(u.verified?'Yes':'No')+'</td>'
+        +'<td>'+fmt(u.created_at)+'</td><td>'+fmt(u.last_login)+'</td><td>'+esc(u.logins)+'</td>'
+        +'<td><div class="row" style="flex-wrap:nowrap">'
+        +'<button class="btn s g" data-a="verify" data-id="'+esc(u.id)+'" data-v="'+(u.verified?'0':'1')+'">'+(u.verified?'Unverify':'Verify')+'</button>'
+        +(u.status==='banned'?'<button class="btn s" data-a="status" data-s="active" data-id="'+esc(u.id)+'">Unban</button>':'<button class="btn s d" data-a="status" data-s="banned" data-id="'+esc(u.id)+'">Ban</button>')
+        +(u.status==='review'?'<button class="btn s" data-a="status" data-s="active" data-id="'+esc(u.id)+'">Approve</button>':'')
+        +'</div></td></tr>';
+    }).join('')||'<tr><td colspan="11" class="muted">No members found.</td></tr>';
+  });
+}
+$('#qgo').addEventListener('click',function(){loadMembers($('#q').value.trim())});
+$('#q').addEventListener('keydown',function(e){if(e.key==='Enter')loadMembers($('#q').value.trim())});
+$('#mbody').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-a]');if(!b)return;
+  b.disabled=true;
+  var p=b.getAttribute('data-a')==='verify'
+    ?sb.rpc('admin_set_verified',{p_uid:b.getAttribute('data-id'),p_v:b.getAttribute('data-v')==='1'})
+    :sb.rpc('admin_set_status',{p_uid:b.getAttribute('data-id'),p_status:b.getAttribute('data-s')});
+  p.then(function(r){if(r.error){toast(em(r.error));b.disabled=false;return}toast('Done.');loadMembers($('#q').value.trim());loadOverview()});
+});
+$('#csv').addEventListener('click',function(){
+  var head=['name','email','mobile','age','gender','city','status','verified','joined','last_login','logins'];
+  var rows=users.map(function(u){return [u.display_name,u.email,u.phone,u.age,u.gender,u.city,u.status,u.verified,u.created_at,u.last_login,u.logins]});
+  var csv=[head].concat(rows).map(function(r){return r.map(function(c){c=String(c==null?'':c);if(/^[=+\-@]/.test(c))c="'"+c;return '"'+c.replace(/"/g,'""')+'"'}).join(',')}).join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='crushwave-members.csv';document.body.appendChild(a);a.click();a.remove();
+});
+function loadLogins(){
+  sb.rpc('admin_logins',{p_limit:100}).then(function(r){
+    if(r.error){toast(em(r.error));return}
+    $('#lbody').innerHTML=(r.data||[]).map(function(l){return '<tr><td>'+fmt(l.at)+'</td><td>'+esc(l.display_name||'(no profile yet)')+'</td><td>'+esc(l.email||'-')+'</td><td>'+esc(l.phone?'+'+String(l.phone).replace(/^\+/,''):'-')+'</td><td>'+esc(l.city||'-')+'</td></tr>'}).join('')||'<tr><td colspan="5" class="muted">No logins yet.</td></tr>';
+  });
+}
+function loadReports(){
+  sb.rpc('admin_reports').then(function(r){
+    if(r.error){toast(em(r.error));return}
+    $('#rbody').innerHTML=(r.data||[]).map(function(x){
+      return '<tr><td>'+fmt(x.at)+'</td><td>'+esc(x.target_name||'(deleted)')+'</td><td class="wrapc">'+esc(x.reason)+'</td><td>'+esc(x.reporter_name||'-')+'</td><td><span class="pill '+esc(x.status)+'">'+esc(x.status)+'</span></td>'
+        +'<td><div class="row" style="flex-wrap:nowrap">'+(x.status==='open'?'<button class="btn s" data-r="'+esc(x.id)+'">Mark resolved</button>':'')
+        +'<button class="btn s d" data-ban="'+esc(x.target)+'">Ban</button></div></td></tr>';
+    }).join('')||'<tr><td colspan="6" class="muted">No reports.</td></tr>';
+  });
+}
+$('#rbody').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var p=b.hasAttribute('data-r')?sb.rpc('admin_resolve_report',{p_id:Number(b.getAttribute('data-r'))}):sb.rpc('admin_set_status',{p_uid:b.getAttribute('data-ban'),p_status:'banned'});
+  b.disabled=true;
+  p.then(function(r){if(r.error){toast(em(r.error));b.disabled=false;return}toast('Done.');loadReports();loadOverview();loadMembers($('#q').value.trim())});
+});
+function loadWords(){
+  sb.rpc('admin_words').then(function(r){
+    if(r.error){toast(em(r.error));return}
+    $('#wlist').innerHTML=(r.data||[]).map(function(w){return '<span>'+esc(w)+'<button aria-label="Remove '+esc(w)+'" data-w="'+esc(w)+'">x</button></span>'}).join('')||'<span class="muted">No words yet.</span>';
+  });
+}
+$('#addw').addEventListener('click',addWord);
+$('#nw').addEventListener('keydown',function(e){if(e.key==='Enter')addWord()});
+function addWord(){
+  var w=$('#nw').value.trim();if(!w)return;
+  sb.rpc('admin_add_word',{p_w:w}).then(function(r){if(r.error){toast(em(r.error));return}$('#nw').value='';loadWords();toast('Added.')});
+}
+$('#wlist').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-w]');if(!b)return;
+  sb.rpc('admin_remove_word',{p_w:b.getAttribute('data-w')}).then(function(r){if(r.error){toast(em(r.error));return}loadWords()});
+});
+function loadAds(){
+  sb.rpc('admin_ads',{p_days:14}).then(function(r){
+    if(r.error){toast(em(r.error));return}
+    var by={},days=[];
+    (r.data||[]).forEach(function(x){var d=String(x.day);if(!by[d]){by[d]={interstitial:0,video:0,banner:0};days.push(d)}by[d][x.kind]=Number(x.n)});
+    var rows=days.slice().reverse().map(function(d){var o=by[d],t=o.interstitial+o.video+o.banner;return '<tr><td>'+esc(fday(d))+'</td><td>'+o.interstitial+'</td><td>'+o.video+'</td><td>'+o.banner+'</td><td><b>'+t+'</b></td></tr>'});
+    $('#abody').innerHTML=rows.join('')||'<tr><td colspan="5" class="muted">No ads shown yet.</td></tr>';
+    bars($('#adBars'),days.map(function(d){var o=by[d];return {day:d,n:o.interstitial+o.video+o.banner}}),'n',function(x){return fday(x.day)});
+  });
+}
+/* install as an app on the phone */
+var deferred=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;$('#installBtn').hidden=false});
+$('#installBtn').addEventListener('click',function(){if(!deferred)return;deferred.prompt();deferred.userChoice.then(function(){deferred=null;$('#installBtn').hidden=true})});
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+})();
+</script>
+</body>
+</html>
