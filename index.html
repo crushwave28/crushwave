@@ -399,6 +399,7 @@ the sponsored card after every 15 profiles, and the 5 second video break after e
   <footer>
     <div class="wrap">
       <p><b style="color:var(--fg)">Crushwave is for adults only (18+).</b> Never send money to someone you have not met. Meet in public places and tell a friend where you are going.</p>
+      <p><a href="terms.html">Terms of Use</a> · <a href="privacy.html">Privacy Policy</a> · <a href="mailto:crushwave28@gmail.com">Contact</a></p>
       <p>Sample profiles in the preview are fictional. Illustrations are not photographs of real people.</p>
     </div>
   </footer>
@@ -434,7 +435,17 @@ the sponsored card after every 15 profiles, and the 5 second video break after e
     </div>
     <p class="errtxt" id="aMsg" role="status"></p>
     <div class="row" id="aGoogleRow"><button class="btn ghost" id="aGoogle">Continue with Google</button></div>
-    <p class="note">By continuing you confirm you are 18 or older.</p>
+    <p class="note">By continuing you confirm you are 18 or older and agree to our <a href="terms.html" target="_blank" rel="noopener">Terms</a> and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+  </div>
+</div>
+
+<div class="ov" id="ovTerms" role="dialog" aria-modal="true" aria-labelledby="tT" hidden>
+  <div class="modal">
+    <h2 id="tT">One last step</h2>
+    <p>Please read and accept our rules to continue.</p>
+    <label class="consent" style="text-align:left"><input type="checkbox" id="tCheck"><span>I am 18 or older. I have read and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Use</a> and the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>. I agree that Crushwave may store my profile details and show them to other adult members.<span class="mr">मी १८ वर्षांचा/ची किंवा त्याहून मोठा/मोठी आहे. मी अटी (Terms) आणि गोपनीयता धोरण (Privacy Policy) वाचले असून मला मान्य आहेत.</span></span></label>
+    <div class="row" style="margin-top:16px"><button class="btn primary" id="tGo" disabled>Continue</button></div>
+    <div class="row"><button class="btn ghost" id="tOut">Log out</button></div>
   </div>
 </div>
 
@@ -564,7 +575,7 @@ if(!LIVE){
 }else{
   DB.deck=function(){return sb.rpc('discover',{p_limit:30}).then(function(r){if(r.error)throw r.error;return (r.data||[]).map(mapProfile)})};
   DB.act=function(p,kind){return sb.rpc('like_profile',{p_target:p.id,p_kind:kind}).then(function(r){if(r.error)throw r.error;return !!r.data})};
-  DB.report=function(p){return sb.rpc('report_profile',{p_target:p.id,p_reason:'reported from card'})};
+  DB.report=function(p,why){return sb.rpc('report_profile',{p_target:p.id,p_reason:why||'reported from card'})};
   DB.block=function(p){return sb.rpc('block_profile',{p_target:p.id})};
   DB.logAd=function(kind){sb.rpc('log_ad',{p_kind:kind}).then(function(){},function(){})};
 }
@@ -855,6 +866,25 @@ function renderChat(root,m){
   var av=el('div','av');av.style.width='42px';av.style.height='42px';av.innerHTML=avatar(p.h,p.v);
   var nm=el('div');nm.appendChild(el('b','',p.n));var sub=el('div','meta',[p.job,p.c].filter(Boolean).join(' · '));sub.style.color='var(--mute)';nm.appendChild(sub);
   hd.appendChild(back);hd.appendChild(av);hd.appendChild(nm);
+  hd.style.position='relative';
+  var more=el('button','back','\u22EF');more.type='button';more.style.marginLeft='auto';more.style.fontSize='22px';more.setAttribute('aria-label','Report or block');
+  more.addEventListener('click',function(ev){
+    ev.stopPropagation();
+    var old=$('.menu',hd);if(old){old.remove();return}
+    var mn=el('div','menu');mn.style.top='54px';
+    var rb=el('button','','Report'),bb=el('button','warn','Block');
+    rb.addEventListener('click',function(){mn.remove();DB.report(p,'reported from chat').then(null,function(){});toast('Reported. Thanks for keeping Crushwave safe.')});
+    bb.addEventListener('click',function(){
+      mn.remove();
+      if(!window.confirm('Block '+p.n+'? You will not see each other again.'))return;
+      S.blocked[p.id]=1;
+      Promise.resolve(DB.block(p)).then(null,function(){});
+      S.matches=S.matches.filter(function(x){return x.id!==m.id});
+      S.openChat=null;stopPoll();renderMatches();toast('Blocked. You will not see each other again.');
+    });
+    mn.appendChild(rb);mn.appendChild(bb);hd.appendChild(mn);
+  });
+  hd.appendChild(more);
   var ms=el('div','msgs');ms.setAttribute('aria-live','polite');
   (S.chats[m.id]||[]).forEach(function(x){ms.appendChild(bubble(x))});
   var ice=el('div','ice');
@@ -904,7 +934,7 @@ function fillMe(x){
   x=x||{};
   $('#meName').value=x.display_name||'';$('#meDob').value=x.birth_date||'';$('#meGender').value=x.gender||'w';
   $('#meCity').value=x.city||'';$('#meLook').value=x.looking_for||'all';$('#meInt').value=(x.interests||[]).join(', ');$('#meBio').value=x.bio||'';
-  var has=!!x.consent_at;$('#consentRow').hidden=has;$('#meConsent').checked=has;
+  var has=!!x.consent_at||!!S.termsOk;$('#consentRow').hidden=has;$('#meConsent').checked=has;
   prevMe();
 }
 function setErr(m){$('#meErr').textContent=m||''}
@@ -1005,7 +1035,7 @@ function afterLogin(user){
   sb.from('profiles').select('*').eq('id',user.id).maybeSingle().then(function(r){
     if(r.error){toast(errMsg(r.error));return}
     S.myProfile=r.data;
-    if(!r.data||!r.data.consent_at){S.needProfile=true;fillMe(r.data);setTab('me');toast('Welcome! Finish your profile to start.');return}
+    if(!r.data||!r.data.consent_at){S.needProfile=true;fillMe(r.data);setTab('me');$('#tCheck').checked=false;$('#tGo').disabled=true;show('#ovTerms');return}
     fillMe(r.data);
     if(r.data.status!=='active'){toast('Your profile is under review, so you cannot see other members right now.')}
     refill(true);loadMatches();
@@ -1020,6 +1050,15 @@ function initLive(){
     if(r.data&&r.data.session)afterLogin(r.data.session.user);else show('#ovAuth');
   }).catch(function(e){toast(errMsg(e))});
 }
+
+/* terms gate after login */
+$('#tCheck').addEventListener('change',function(){$('#tGo').disabled=!this.checked});
+$('#tGo').addEventListener('click',function(){
+  if(!$('#tCheck').checked)return;
+  S.termsOk=true;hide('#ovTerms');fillMe(S.myProfile);
+  toast('Thanks! Now finish your profile to start.');
+});
+$('#tOut').addEventListener('click',function(){if(sb)sb.auth.signOut().then(function(){location.reload()})});
 
 /* age gate */
 function afterGate(){hide('#ovGate');if(LIVE)initLive()}
